@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const cors = require("cors");
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000; // ⚠️ Alterado para usar variável de ambiente
 const SECRET = "segredo-super-seguro";
 
 // Middleware
@@ -23,11 +23,10 @@ db.serialize(() => {
 
   // Criar o "Banco Central"
   const senhaHash = bcrypt.hashSync("admin123", 10);
-  db.run("INSERT INTO users (username, password, balance) VALUES (?, ?, ?)", [
-    "banco_central",
-    senhaHash,
-    10000,
-  ]);
+  db.run(
+    "INSERT INTO users (username, password, balance) VALUES (?, ?, ?)",
+    ["banco_central", senhaHash, 10000]
+  );
 });
 
 // Função para autenticação
@@ -108,3 +107,4 @@ app.post("/transfer", autenticar, (req, res) => {
 app.listen(PORT, () => {
   console.log(`Servidor rodando em http://localhost:${PORT}`);
 });
+
